@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>生日快乐 💝</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 34px;
+    padding: 40px 16px;
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+    background: radial-gradient(circle at 20% 20%, #ffd9e6 0%, transparent 55%),
+                radial-gradient(circle at 80% 10%, #ffe9c7 0%, transparent 50%),
+                linear-gradient(160deg, #fff2f6 0%, #ffe6ef 45%, #f9dbe8 100%);
+    overflow-x: hidden;
+  }
+
+  /* 飘落的爱心 */
+  .heart-fall {
+    position: fixed;
+    top: -40px;
+    font-size: 18px;
+    animation: fall linear forwards;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  h1 {
+    position: relative;
+    z-index: 2;
+    font-size: 30px;
+    letter-spacing: 3px;
+    color: #d6336c;
+    text-shadow: 0 2px 10px rgba(214, 51, 108, .18);
+  }
+
+  /* ===== 信封 ===== */
+  .stage {
+    position: relative;
+    z-index: 2;
+    width: 340px;
+    height: 230px;
+    perspective: 1200px;
+  }
+
+  .envelope {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(150deg, #ff9fb8, #f4718f);
+    border-radius: 10px;
+    box-shadow: 0 22px 45px rgba(200, 60, 100, .32);
+  }
+
+  /* 信封正面文字 */
+  .front-text {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 34px;
+    text-align: center;
+    color: #fff;
+    font-size: 22px;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, .18);
+    z-index: 4;
+    transition: opacity .4s;
+  }
+
+  .seal {
+    position: absolute;
+    left: 50%;
+    top: 96px;
+    transform: translateX(-50%);
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: #fff6f9;
+    color: #e64980;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .16);
+    z-index: 5;
+    transition: opacity .35s, transform .35s;
+  }
+
+  /* 信封盖子 */
+  .flap {
+    position: absolute;
+    left: 0; top: 0;
+    width: 340px; height: 118px;
+    background: linear-gradient(#ffb3c6, #ff8fab);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform .8s ease, z-index .8s;
+    z-index: 6;
+    border-radius: 10px 10px 0 0;
+  }
+
+  /* 信纸 */
+  .letter {
+    position: absolute;
+    left: 16px;
+    top: 22px;
+    width: 308px;
+    max-height: 190px;
+    overflow-y: auto;
+    padding: 26px 24px;
+    background: #fffdf8;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .16);
+    color: #6b4a52;
+    font-size: 15px;
+    line-height: 2.05;
+    text-align: center;
+    z-index: 2;
+    transition: transform 1s cubic-bezier(.22, 1, .36, 1),
+                max-height 1s ease, opacity .5s;
+    transform: translateY(0) scale(.96);
+    opacity: 0;
+  }
+
+  .letter p + p { margin-top: 2px; }
+  .letter .sign {
+    margin-top: 14px;
+    color: #e64980;
+    font-size: 16px;
+  }
+
+  /* 打开后的状态 */
+  .stage.open .flap { transform: rotateX(180deg); z-index: 1; }
+  .stage.open .seal { opacity: 0; transform: translateX(-50%) scale(.4); }
+  .stage.open .front-text { opacity: 0; }
+  .stage.open .letter {
+    opacity: 1;
+    max-height: 460px;
+    transform: translateY(-190px) scale(1);
+    z-index: 8;
+  }
+  .stage.open { height: 430px; }
+
+  button {
+    position: relative;
+    z-index: 2;
+    padding: 13px 40px;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff8fab, #e64980);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(230, 73, 128, .35);
+    transition: transform .2s, box-shadow .2s;
+  }
+  button:hover { transform: translateY(-3px); box-shadow: 0 14px 26px rgba(230, 73, 128, .45); }
+  button:active { transform: translateY(0); }
+
+  @media (max-width: 420px) {
+    .stage { width: 300px; }
+    .flap { width: 300px; }
+    .letter { width: 270px; }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+
+  <h1>🎂 生日快乐 🎂</h1>
+
+  <div class="stage" id="stage">
+    <div class="envelope"></div>
+    <div class="letter">
+      <p>乖乖生日快乐呀</p >
+      <p>祝我们乖乖每天都开开心心、一帆风顺</p >
+      <p>希望以后每年乖乖的生日</p >
+      <p>我都可以陪着乖乖</p >
+      <p>虽然乖乖长大了一岁</p >
+      <p>但我希望在我面前</p >
+      <p>乖乖永远都可以像个小孩一样无忧无虑</p >
+      <p>我不会要求乖乖变得成熟</p >
+      <p>乖乖永远都可以选择来依靠我</p >
+      <p>我只希望乖乖每天都能快快乐乐的</p >
+      <p>你永远都是我最爱的的乖乖哦</p >
+      <p class="sign">我爱你 💝</p >
+    </div>
+    <div class="flap"></div>
+    <div class="front-text">生日快乐</div>
+    <div class="seal">💗</div>
+  </div>
+
+  <button id="btn">点我开启信封 💌</button>
+
+<script>
+  var stage = document.getElementById("stage");
+  var btn = document.getElementById("btn");
+
+  function rainHearts(n) {
+    var chars = ["💗", "💖", "💕", "🎀", "✨", "🎉"];
+    for (var i = 0; i < n; i++) {
+      var h = document.createElement("div");
+      h.className = "heart-fall";
+      h.textContent = chars[Math.floor(Math.random() * chars.length)];
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.fontSize = (14 + Math.random() * 20) + "px";
+      h.style.animationDuration = (4 + Math.random() * 5) + "s";
+      h.style.animationDelay = (Math.random() * 3) + "s";
+      document.body.appendChild(h);
+      setTimeout(function (el) {
+        return function () { el.remove(); };
+      }(h), 12000);
+    }
+  }
+
+  btn.addEventListener("click", function () {
+    var opened = stage.classList.toggle("open");
+    btn.textContent = opened ? "收起信封 💗" : "点我开启信封 💌";
+    if (opened) {
+      rainHearts(28);
+      setTimeout(function () {
+        stage.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
+    }
+  });
+
+  rainHearts(10);
+</script>
+
+</body>
+</html>
